@@ -1,77 +1,17 @@
-int Echo = 7;
-int trig = 6;
-int enA = 5;
-int enB = 3;
-const int in1 = 13;
-const int in2 = 12;
-const int in3 = 11;
-const int in4 = 10;
 
+#include <Servo.h>
 
+Servo ESC;     //  control the ESC
 
-
-
+int potValue;  // value from the analog pin
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(Echo, INPUT);
-  pinMode(trig, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
-  pinMode(enB, OUTPUT);
-  pinMode(enA, OUTPUT);
-
-  
-
-  
-
+  // Attach the ESC on pin 9
+  ESC.attach(9,1000,2000); // (pin, min pulse width, max pulse width in microseconds) 
 }
 
 void loop() {
-  float Ceni;
-  int pulse;
-  
-  digitalWrite(trig, LOW);
-  delayMicroseconds(20);
-  digitalWrite(trig, HIGH);
-  delayMicroseconds(100);
-  digitalWrite(trig, LOW);
-
-  pulse = pulseIn(Echo, HIGH);
-
-  Ceni = pulse / 29.387 / 2;
-
-  Serial.println(Ceni);
-  delay(200);
-  
-
-  
-  if (Ceni <= 12) {
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, LOW);
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
-    delay(2000);
-   
-  }
-  else {
-     analogWrite(enB, 90);
-
-
-    digitalWrite(in1, LOW);
-    digitalWrite(in2, HIGH);
-
-    analogWrite(enA, 90);
-    digitalWrite(in3, HIGH);
-    digitalWrite(in4, LOW);
-  delay(100);
-    
-  }
-  }
-
-  
-  
-
-
+  potValue = analogRead(A0);   // reads the value of the potentiometer (value between 0 and 1023)
+  potValue = map(potValue, 0, 1023, 0, 180);   // scale it to use it with the servo library (value between 0 and 180)
+  ESC.write(potValue);    // Send the signal to the ESC
+}
